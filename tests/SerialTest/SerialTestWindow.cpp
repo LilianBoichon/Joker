@@ -25,6 +25,23 @@ SerialTestWindow::SerialTestWindow(SerialTestSettings *settings) :
 	on_checkA_toggled(_settings->activatePortA());
 	ui->checkB->setChecked(_settings->activatePortB());
 	on_checkB_toggled(_settings->activatePortB());
+
+	// Populate available serial port:
+
+	if(!QSerialPortInfo::availablePorts().empty()) {
+		ui->menuSerial_A->clear();
+		ui->menuSerial_B->clear();
+	}
+
+	foreach(QSerialPortInfo info, QSerialPortInfo::availablePorts()){
+		QAction *actionA = ui->menuSerial_A->addAction(info.portName());
+		actionA->setObjectName(info.portName());
+		connect(actionA, SIGNAL(triggered()), this, SLOT(onAvailablePortA_trigger()));
+
+		QAction *actionB = ui->menuSerial_B->addAction(info.portName());
+		actionB->setObjectName(info.portName());
+		connect(actionB, SIGNAL(triggered()), this, SLOT(onAvailablePortB_trigger()));
+	}
 }
 
 SerialTestWindow::~SerialTestWindow()
@@ -128,4 +145,14 @@ void SerialTestWindow::checkCTS()
 
 	_timerCounter.tick();
 	PHDEBUG << _timerCounter.frequency() << frequency << cts;
+}
+
+void SerialTestWindow::onAvailablePortA_trigger()
+{
+	_settings->setPortAName(sender()->objectName());
+}
+
+void SerialTestWindow::onAvailablePortB_trigger()
+{
+	_settings->setPortBName(sender()->objectName());
 }

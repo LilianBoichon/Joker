@@ -106,10 +106,46 @@
      <x>0</x>
      <y>0</y>
      <width>488</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuSettings">
+    <property name="title">
+     <string>Settings</string>
+    </property>
+    <widget class="QMenu" name="menuSerial_A">
+     <property name="title">
+      <string>Serial A</string>
+     </property>
+     <addaction name="actionNone"/>
+    </widget>
+    <widget class="QMenu" name="menuSerial_B">
+     <property name="title">
+      <string>Serial B</string>
+     </property>
+     <addaction name="actionNone_2"/>
+    </widget>
+    <addaction name="menuSerial_A"/>
+    <addaction name="menuSerial_B"/>
+   </widget>
+   <addaction name="menuSettings"/>
   </widget>
+  <action name="actionNone">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>None</string>
+   </property>
+  </action>
+  <action name="actionNone_2">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>None</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <tabstops>

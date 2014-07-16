@@ -32,6 +32,9 @@ private slots:
 	void on_checkB_toggled(bool checked);
 	void checkCTS();
 
+	void onAvailablePortA_trigger();
+	void onAvailablePortB_trigger();
+
 private:
 	bool open(QSerialPort * serial, QString suffix);
 
