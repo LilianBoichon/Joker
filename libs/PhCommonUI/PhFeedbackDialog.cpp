@@ -60,8 +60,10 @@ void PhFeedbackDialog::on_buttonBox_accepted()
 
 
 	// Get the system infos
-	system("/usr/sbin/system_profiler SPHardwareDataType > out");
-	QFile systemInfoFile("./out");
+	QString tempFileName(tmpnam(NULL));
+#if defined(Q_OS_MAC)
+	system(PHNQ(QString("/usr/sbin/system_profiler SPHardwareDataType > %1").arg(tempFileName)));
+	QFile systemInfoFile(tempFileName);
 	if(!systemInfoFile.open(QIODevice::ReadOnly))
 		PHDEBUG << systemInfoFile.errorString();
 	else {
@@ -70,14 +72,15 @@ void PhFeedbackDialog::on_buttonBox_accepted()
 			systemConfig += in.readLine() + "\n";
 		}
 		systemInfoFile.close();
-		system("rm out");
+		system(PHNQ(QString("rm %1").arg(tempFileName)));
 	}
-
+#else
+	system(PHNQ(QString("rm %1").arg(tempFileName)));
+#endif
 
 	// Get the preferences
-	QString cmd = "defaults read com.Phonations." + QString(APP_NAME) + " > out";
-	system(PHNQ(cmd));
-	QFile preferencesFile("./out");
+	system(PHNQ(QString("defaults read com.Phonations.%1 > %2").arg(QString(APP_NAME)).arg(tempFileName)));
+	QFile preferencesFile(tempFileName);
 	if(!preferencesFile.open(QIODevice::ReadOnly)) {
 		PHDEBUG << preferencesFile.errorString();
 	}
@@ -87,7 +90,7 @@ void PhFeedbackDialog::on_buttonBox_accepted()
 			preferences += in.readLine() + "\n";
 		}
 		preferencesFile.close();
-		system("rm out");
+		system(PHNQ(QString("rm %1").arg(tempFileName)));
 	}
 
 
@@ -187,9 +190,7 @@ void PhFeedbackDialog::on_buttonBox_accepted()
 
 	// Send it
 	manager->post(request, post.toUtf8());
-	QMessageBox::information(this, "Information",
-	                         tr("Thank you for your feedback!"),
-	                         QMessageBox::Ok, QMessageBox::Ok);
+	QMessageBox::information(this, "Information", tr("Thank you for your feedback!"), QMessageBox::Ok, QMessageBox::Ok);
 	hide();
 }
 
